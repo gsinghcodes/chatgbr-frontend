@@ -1,9 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/auth/login",
+        "http://localhost:8000/auth/register",
         {
           method: "POST",
           headers: {
@@ -36,7 +37,7 @@ export default function LoginPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.detail || "Login failed");
+        throw new Error(result.detail || "Registration failed");
       }
 
       localStorage.setItem(
@@ -60,10 +61,10 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-lg  p-8 shadow"
+        className="w-full max-w-md rounded-lg p-8 shadow"
       >
         <h1 className="mb-6 text-center text-3xl font-bold">
-          Login
+          Create Account
         </h1>
 
         <div className="mb-4">
@@ -105,17 +106,17 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded bg-black py-2 text-white transition hover:opacity-90 disabled:opacity-50"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Creating Account..." : "Register"}
         </button>
 
         <p className="mt-6 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <a
-            href="/register"
+          Already have an account?{" "}
+          <Link
+            href="/login"
             className="font-semibold underline"
           >
-            Register
-          </a>
+            Login
+          </Link>
         </p>
       </form>
     </main>
