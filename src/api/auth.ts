@@ -5,32 +5,41 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface RegisterRequest {
-  email: string;
-  password: string;
-}
-
 export interface User {
   id: string;
   name: string;
   email: string;
 }
 
+const BASE_URL = "/api/v1/auth"
+
 
 export async function login(data: LoginRequest) {
-  const response = await apiInstance.post("/auth/login", data);
+  const response = await apiInstance.post(`${BASE_URL}/login`, data);
 
   return response.data;
 }
 
-export async function register(data: RegisterRequest) {
-  const response = await apiInstance.post("/auth/register", data);
+export async function register(data: LoginRequest) {
+  const response = await apiInstance.post(`${BASE_URL}/register`, data);
 
   return response.data;
-}
+};
 
-export async function getCurrentUser(): Promise<User> {
-  const response = await apiInstance.get("/auth/me");
+export const logoutUser = async () => {
+  const response = await apiInstance.post(`${BASE_URL}/logout`);
+
+  return response.data.data;
+};
+
+export const getNewToken = async () => {
+  const response = await apiInstance.post(`${BASE_URL}/refresh`);
+
+  return response.data.data.access_token;
+};
+
+export async function getCurrentUser() {
+  const response = await apiInstance.get(`${BASE_URL}/me`);
 
   return response.data.data;
 }

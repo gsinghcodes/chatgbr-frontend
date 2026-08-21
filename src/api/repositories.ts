@@ -38,13 +38,12 @@ export async function getRepository(
 }
 
 export async function createRepository(data: {
-  name: string;
   clone_url: string;
-}): Promise<Repository> {
+}){
   const response = await apiInstance.post(
     "/repositories",
     data,
   );
-
-  return unwrapData<Repository>(response.data);
+  console.log(response)
+  return response.data;
 }
