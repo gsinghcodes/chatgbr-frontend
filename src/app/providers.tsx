@@ -21,6 +21,15 @@ export default function Providers({
           queries: {
             staleTime: 30_000,
             refetchOnWindowFocus: false,
+            retry: (failureCount, error: any) => {
+              const status = error?.response?.status;
+
+              if (status && status >= 400 && status < 500) {
+                return false;
+              }
+
+              return failureCount < 3;
+            },
           },
         },
       }),
