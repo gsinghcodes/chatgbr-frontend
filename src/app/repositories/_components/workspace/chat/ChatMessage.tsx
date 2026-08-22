@@ -46,8 +46,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={
           user
-            ? "group relative max-w-2xl rounded-lg bg-[#ece6d8] px-3 py-2 text-[#151512]"
-            : "group relative max-w-3xl rounded-lg bg-[#171715] px-3 py-2 text-[#f4f1ea]"
+            ? "group relative min-w-0 max-w-2xl rounded-lg bg-[#ece6d8] px-3 py-2 text-[#151512]"
+            : "group relative min-w-0 max-w-3xl rounded-lg bg-[#171715] px-3 py-2 text-[#f4f1ea]"
         }
       >
         {hasReasoning && (
@@ -59,7 +59,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                   ? { opacity: [0.3, 1, 0.3] }
                   : { opacity: 0.5 }
               }
-              className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#c9a44c] via-[#c9a44c]/40 to-transparent"
+              className="absolute bottom-0 left-0 top-0 w-1 bg-linear-to-b from-[#4cc95f] via-[#4cc95f]/40 to-transparent"
               transition={
                 isThinking
                   ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
@@ -82,7 +82,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                     {[0, 1, 2].map((i) => (
                       <motion.span
                         animate={{ opacity: [0.2, 1, 0.2] }}
-                        className="h-1 w-1 rounded-full bg-[#c9a44c]"
+                        className="h-1 w-1 rounded-full bg-[#4cc95f]"
                         key={i}
                         transition={{
                           duration: 1.2,
@@ -97,9 +97,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
               </span>
 
               <ChevronDown
-                className={`h-3.5 w-3.5 shrink-0 text-[#8c8a82] transition-transform duration-200 ${
-                  expanded ? "rotate-180" : ""
-                }`}
+                className={`h-3.5 w-3.5 shrink-0 text-[#8c8a82] transition-transform duration-200 ${expanded ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
@@ -111,7 +110,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                   initial={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.18, ease: "easeOut" }}
                 >
-                  <div className="max-h-64 overflow-y-auto whitespace-pre-wrap py-3 pl-4 pr-3 font-mono text-xs leading-6 text-[#8c8a82]">
+                  <div className="max-h-64 scrollbar-none overflow-y-auto whitespace-pre-wrap py-3 pl-4 pr-3 font-mono text-xs leading-6 text-[#8c8a82]">
                     {message.reasoning}
                   </div>
                 </motion.div>
@@ -121,7 +120,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         )}
 
         {message.content && (
-          <div className="prose-invert-custom text-sm leading-7">
+          <div className="prose-invert-custom custom-scrollbar text-sm overflow-x-scroll leading-7">
             <Markdown
               components={{
                 p: ({ children }) => (
@@ -134,7 +133,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                 ),
                 a: ({ children, href }) => (
                   <a
-                    className="text-[#c9a44c] underline decoration-[#c9a44c]/40 underline-offset-2 hover:decoration-[#c9a44c]"
+                    className="text-[#4cc95f] underline decoration-[#c9a44c]/40 underline-offset-2 hover:decoration-[#4cc95f]"
                     href={href}
                     rel="noreferrer"
                     target="_blank"
@@ -182,8 +181,24 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                     <code
                       className={
                         user
-                          ? "rounded bg-[#dcd4bf] px-1.5 py-0.5 font-mono text-[13px] text-[#151512]"
-                          : "rounded bg-[#232320] px-1.5 py-0.5 font-mono text-[13px] text-[#e3b866]"
+                          ? `
+                            rounded-md
+                            bg-[#cfcfbe]
+                            px-1.5
+                            py-0.5
+                            font-mono
+                            text-[13px]
+                            text-[#263027]
+                          `
+                          : `
+                            rounded-md
+                            bg-[#202920]
+                            px-1.5
+                            py-0.5
+                            font-mono
+                            text-[13px]
+                            text-[#91bfa0]
+                          `
                       }
                       {...props}
                     >

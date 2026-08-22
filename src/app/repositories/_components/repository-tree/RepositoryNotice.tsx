@@ -1,3 +1,5 @@
+import { AlertCircle, Inbox } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface RepositoryNoticeProps {
@@ -9,16 +11,19 @@ export default function RepositoryNotice({
   text,
   tone = "muted",
 }: RepositoryNoticeProps) {
+  const Icon = tone === "error" ? AlertCircle : Inbox;
+
   return (
     <div
       className={cn(
-        "rounded-lg px-3 py-2 text-sm leading-6",
+        "flex items-center gap-2 rounded-md px-3 py-2 text-xs leading-5",
         tone === "error"
           ? "bg-[#241612] text-[#d59684]"
-          : "bg-[#1a1a19] text-[#77756e]",
+          : "bg-[#161613] text-[#6b685f]",
       )}
     >
-      {text}
+      <Icon className="h-3.5 w-3.5 shrink-0" />
+      <span>{text}</span>
     </div>
   );
 }

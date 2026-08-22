@@ -16,20 +16,55 @@ export async function streamChat(
   data: ChatRequest,
   onEvent: (event: StreamEvent) => void,
 ) {
-  const token = localStorage.getItem("access_token");
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/repositories/${repositoryId}/chat`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "text/event-stream",
-        Authorization: `Bearer ${token}`,
+  const makeRequest = async () => {
+    const token = localStorage.getItem("access_token");
+
+    return fetch(
+      `${apiUrl}/repositories/${repositoryId}/chat`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    },
-  );
+    );
+  };
+
+  let response = await makeRequest();
+
+  if (response.status === 401) {
+    const refreshResponse = await fetch(
+      `${apiUrl}/auth/refresh`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+
+    if (!refreshResponse.ok) {
+      throw new Error(
+        "Session expired. Please log in again.",
+      );
+    }
+
+    const refreshData = await refreshResponse.json();
+
+    const accessToken =
+      refreshData.data.access_token;
+
+    localStorage.setItem(
+      "access_token",
+      accessToken,
+    );
+
+    response = await makeRequest();
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -38,7 +73,9 @@ export async function streamChat(
   }
 
   if (!response.body) {
-    throw new Error("Streaming is not supported by this response.");
+    throw new Error(
+      "Streaming is not supported by this response.",
+    );
   }
 
   const reader = response.body.getReader();
@@ -79,7 +116,8 @@ export async function streamChat(
 
         if (parsed.type === "error") {
           throw new Error(
-            parsed.message ?? "Unable to generate response.",
+            parsed.message ??
+              "Unable to generate response.",
           );
         }
       } catch (error) {
@@ -87,7 +125,10 @@ export async function streamChat(
           throw error;
         }
 
-        console.error("Failed to parse stream event:", error);
+        console.error(
+          "Failed to parse stream event:",
+          error,
+        );
       }
     }
   }

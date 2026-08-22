@@ -29,10 +29,11 @@ export default function Chat({
 }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const { data: repository } = useRepository(repositoryId);
+  const { data: repositoryData } = useRepository(repositoryId);
   const { data: history, fetchNextPage, hasNextPage, isFetchingNextPage } = useConversationMessages(conversationId);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const repository = repositoryData?.data?.repository || {};
   const repositoryName = repository?.name ?? "Select a repository";
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isInitialLoadRef = useRef(true);
@@ -247,59 +248,75 @@ export default function Chat({
       initial={{ opacity: 0, y: 6 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
     >
-      <div onScroll={handleScroll} ref={scrollContainerRef} className="no-scrollbar relative z-10 flex-1 overflow-y-auto">
-        {!Boolean(repositoryId) ? (
-          <div
-            className="flex h-full items-center"
-            key="empty">
-            <div className="mx-auto">
-              <h3 className="text-4xl text-center font-semibold text-[#fffaf0]">Select a repository.</h3>
-              <p className="mt-4 text-sm leading-6 text-[#8c8a82]">Select one from the sidebar to start a code-aware conversation with repository context already attached.</p>
+      <div className="relative flex-1 overflow-hidden">
+        <div
+          onScroll={handleScroll}
+          ref={scrollContainerRef}
+          className="no-scrollbar relative z-10 h-full overflow-y-auto"
+        >
+          {!Boolean(repositoryId) ? (
+            <div
+              className="flex h-full items-center"
+              key="empty">
+              <div className="mx-auto">
+                <h3 className="text-4xl text-center font-semibold text-[#fffaf0]">Select a repository.</h3>
+                <p className="mt-4 text-sm leading-6 text-[#8c8a82]">Select one from the sidebar to start a code-aware conversation with repository context already attached.</p>
+              </div>
             </div>
-          </div>
-        ) : (messages.length === 0) ? (
-          <div
-            className="flex h-full items-center"
-            key="ready"
-          >
-            <div className="mx-auto">
-              <h3 className="text-4xl font-semibold text-center text-[#fffaf0]">Ready when you are.</h3>
-              <p className="mt-4 max-w-lg text-sm leading-6 text-[#8c8a82]">Ask about the architecture, trace a bug, explain a file, or plan the next change.</p>
+          ) : (messages.length === 0) ? (
+            <div
+              className="flex h-full items-center"
+              key="ready"
+            >
+              <div className="mx-auto">
+                <h3 className="text-4xl font-semibold text-center text-[#fffaf0]">Ready when you are.</h3>
+                <p className="mt-4 max-w-lg text-sm leading-6 text-[#8c8a82]">Ask about the architecture, trace a bug, explain a file, or plan the next change.</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="mx-auto flex flex-col gap-6 px-20 py-8">
+          ) : (
+            <div className="mx-auto flex flex-col gap-6 px-20 py-8">
+              <AnimatePresence initial={false}>
+                {messages.map((message, index) => (
+                  <ChatMessage
+                    key={`${message.role}-${index}`}
+                    message={message}
+                  />
+                ))}
 
-            <AnimatePresence initial={false}>
-              {messages.map((message, index) => (
-                <ChatMessage
-                  key={`${message.role}-${index}`}
-                  message={message}
-                />
-              ))}
-
-              {loading &&
-                !messages[messages.length - 1]?.content &&
-                !messages[messages.length - 1]?.reasoning && (
-                  <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-start"
-                    exit={{ opacity: 0, y: -8 }}
-                    initial={{ opacity: 0, y: 8 }}
-                    key="loading"
-                  >
-                    <div className="rounded-xl border border-[#2d2d28] bg-[#171715]/95 px-5 py-4 shadow-[0_12px_40px_rgba(0,0,0,0.22)]">
-                      <div className="flex items-center gap-3">
+                {loading &&
+                  !messages[messages.length - 1]?.content &&
+                  !messages[messages.length - 1]?.reasoning && (
+                    <motion.div
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex justify-start"
+                      exit={{ opacity: 0, y: -8 }}
+                      initial={{ opacity: 0, y: 8 }}
+                      key="loading"
+                    >
+                      <div>
                         <Loader2 className="h-4 w-4 animate-spin text-[#aaa79e]" />
-                        <span className="text-sm text-[#8c8a82]">Reading the code...</span>
                       </div>
-                    </div>
-                  </motion.div>
-                )}
-            </AnimatePresence>
-          </div>
-        )
-        }
+                    </motion.div>
+                  )}
+              </AnimatePresence>
+            </div>
+          )
+          }
+        </div>
+        <div
+          className="
+      pointer-events-none
+      absolute
+      bottom-0
+      left-0
+      right-0
+      z-20
+      h-18
+      bg-linear-to-b
+      from-transparent
+      to-[#0f0f0d]
+    "
+        />
       </div>
 
       <div className="relative z-10">

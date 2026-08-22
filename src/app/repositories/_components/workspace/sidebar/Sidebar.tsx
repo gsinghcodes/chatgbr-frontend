@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import { Repository } from "@/api/repositories";
 import UserProfileModal from "@/components/profile/UserProfileModal";
 import { Button } from "@/components/ui/button";
 
@@ -29,6 +28,8 @@ import { RepositoryListSkeleton } from "../../LoadingSkeletons";
 import Image from "next/image";
 import AddRepositoryModal from "../../repository-tree/AddRepositoryModal";
 import axios from "axios";
+import { Repository } from "@/types/repositories/repository";
+import RepositoryProgressModal from "../../repository-tree/RepositoryProgressModal";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -40,6 +41,7 @@ export default function Sidebar() {
   const [githubRepositoriesOpen, setGitHubRepositoriesOpen] = useState(false);
   const [cloneUrl, setCloneUrl] = useState("");
   const [query, setQuery] = useState("");
+  const [progressRepositoryId, setProgressRepositoryId] = useState<string | null>(null);
 
   const {
     data: repositoryData,
@@ -55,12 +57,14 @@ export default function Sidebar() {
 
   const createRepository = useCreateRepository();
 
-  const handleCreateRepository = (cloneUrl: string) => {
-    createRepository.mutate(
-      {
-        clone_url: cloneUrl,
-      },
-    );
+  const handleCreateRepository = async (cloneUrl: string) => {
+    const result = await createRepository.mutateAsync({
+      clone_url: cloneUrl,
+    });
+
+    setAddRepositoryOpen(false);
+    setCloneUrl("");
+    setProgressRepositoryId(result.data.repository.id);
   };
 
   const user = useAppSelector((state) => state.user.details);
@@ -85,7 +89,7 @@ export default function Sidebar() {
     });
   }
 
-  const repositories = Array.isArray(repositoryData) ? repositoryData : [];
+  const repositories: Repository[] = repositoryData?.data?.repositories || [];
 
   const filteredRepositories = query
     ? repositories.filter((r) =>
@@ -103,7 +107,7 @@ export default function Sidebar() {
   const displayName = user?.github_username ?? user?.email ?? "Signed in";
 
   return (
-    <aside className="flex h-full w-72 shrink-0 flex-col bg-[#0f0f0d]">
+    <aside className="flex h-full w-72 shrink-0 flex-col bg-[#0c0d0c]">
       {/* Header */}
       <div className="flex items-center gap-2.5 px-4 pb-3 pt-4">
         <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-md">
@@ -123,12 +127,12 @@ export default function Sidebar() {
       {/* Search */}
       <div className="px-3 pb-3">
         <div className="flex items-center gap-2 rounded-md bg-[#161613] px-2.5 py-1.5">
-          <Search className="h-3.5 w-3.5 shrink-0 text-[#605d54]" />
+          <Search className="h-3.5 w-3.5 shrink-0 text-[#6b685f]" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search repositories"
-            className="w-full bg-transparent text-xs text-[#eeeadf] placeholder:text-[#605d54] focus:outline-none"
+            className="w-full bg-transparent text-xs text-[#eeeadf] placeholder:text-[#6b685f] focus:outline-none"
           />
         </div>
       </div>
@@ -137,13 +141,13 @@ export default function Sidebar() {
       <nav className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
         {/* Repositories */}
         <div className="mb-1.5 flex items-center justify-between px-1">
-          <p className="text-[11px] font-medium uppercase tracking-wide text-[#605d54]">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-[#6b685f]">
             Repositories
           </p>
           <button
             aria-label="Add repository"
             onClick={() => setAddRepositoryOpen(true)}
-            className="rounded-md p-1 text-[#85827a] transition hover:bg-[#1c1c18] hover:text-[#eeeadf]"
+            className="rounded-md p-1 text-[#6b685f] transition-colors duration-150 hover:bg-[#1c1c18] hover:text-[#eeeadf]"
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
@@ -167,12 +171,7 @@ export default function Sidebar() {
               key={repository.id}
               index={index}
               repository={repository}
-              selected={
-                repository.id ===
-                (pendingRepositoryId === repositoryId
-                  ? repositoryId
-                  : pendingRepositoryId ?? repositoryId)
-              }
+              selected={repository.id === (pendingRepositoryId ?? repositoryId)}
               activeConversationId={conversationId}
               onRepositoryIntent={(nextRepository) => {
                 prepareRepository(nextRepository);
@@ -190,7 +189,7 @@ export default function Sidebar() {
 
         {/* GitHub repositories */}
         <div className="mb-1.5 mt-6 flex items-center px-1">
-          <p className="text-[11px] font-medium uppercase tracking-wide text-[#605d54]">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-[#6b685f]">
             GitHub
           </p>
         </div>
@@ -198,9 +197,9 @@ export default function Sidebar() {
         {!githubRepositoriesOpen && (
           <button
             onClick={() => setGitHubRepositoriesOpen(true)}
-            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-[#85827a] transition hover:bg-[#161613] hover:text-[#eeeadf]"
+            className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-xs text-[#a7a399] transition-colors duration-150 hover:bg-[#1c1c18] hover:text-[#eeeadf]"
           >
-            <GitBranch className="h-3.5 w-3.5" />
+            <GitBranch className="h-3.5 w-3.5 text-[#6b685f]" />
             Browse repositories
           </button>
         )}
@@ -219,7 +218,7 @@ export default function Sidebar() {
           githubRepositories.length === 0 && (
             <div className="rounded-md bg-[#161613] p-3.5">
               <p className="text-xs font-medium text-[#eeeadf]">Connect GitHub</p>
-              <p className="mt-1 text-[11px] leading-4 text-[#77756e]">
+              <p className="mt-1 text-[11px] leading-4 text-[#6b685f]">
                 Browse repositories available to add.
               </p>
               <Button
@@ -243,9 +242,12 @@ export default function Sidebar() {
                   repository={repository}
                   index={index}
                   isAdded={isAdded}
-                  onAdd={() => {
-                    if (isAdded) return;
-                    createRepository.mutate({ clone_url: repository.clone_url });
+                  onAdd={async () => {
+                    const result = await createRepository.mutateAsync({
+                      clone_url: repository.clone_url,
+                    });
+                    console.log(result.data.repository.id)
+                    setProgressRepositoryId(result.data.repository.id);
                   }}
                 />
               );
@@ -255,9 +257,9 @@ export default function Sidebar() {
       </nav>
 
       {/* Profile */}
-      <div className="border-t border-[#1c1c18] p-2">
+      <div className="border-t border-[#232320] p-2">
         <button
-          className="flex w-full min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-left transition hover:bg-[#161613]"
+          className="flex w-full min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors duration-150 hover:bg-[#1c1c18]"
           onClick={() => setProfileOpen(true)}
           type="button"
         >
@@ -268,7 +270,7 @@ export default function Sidebar() {
               className="h-7 w-7 shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1c1c18] text-xs font-medium text-[#eeeadf]">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#232320] bg-[#161613] text-xs font-medium text-[#eeeadf]">
               {displayName?.charAt(0).toUpperCase()}
             </div>
           )}
@@ -278,7 +280,7 @@ export default function Sidebar() {
               {displayName}
             </p>
             {user?.github_username && (
-              <p className="truncate text-[11px] text-[#605d54]">{user.email}</p>
+              <p className="truncate text-[11px] text-[#6b685f]">{user.email}</p>
             )}
           </div>
         </button>
@@ -306,6 +308,18 @@ export default function Sidebar() {
 
       {profileOpen && user && (
         <UserProfileModal onClose={() => setProfileOpen(false)} user={user} />
+      )}
+
+      {progressRepositoryId && (
+        <RepositoryProgressModal
+          repositoryId={progressRepositoryId}
+          onComplete={() => {
+            setProgressRepositoryId(null);
+            queryClient.invalidateQueries({
+              queryKey: ["repositories"],
+            });
+          }}
+        />
       )}
     </aside>
   );

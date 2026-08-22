@@ -15,11 +15,10 @@ export function useCreateRepository() {
       });
     },
 
-    onError: (error) => {
-      console.log("full error:", error);
-      if (axios.isAxiosError(error)) {
-        console.log("response.data:", error.response?.data);
-      }
+    onError: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["repositories"]
+      })
     },
   });
 }
