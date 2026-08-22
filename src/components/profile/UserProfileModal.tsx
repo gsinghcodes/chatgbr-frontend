@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ImageIcon, Loader2, LogOut, RefreshCw, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -59,6 +59,12 @@ export default function UserProfileModal({
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   function updateStoredUser(updatedUser: User) {
     dispatch(
@@ -119,43 +125,57 @@ export default function UserProfileModal({
     <div
       aria-labelledby="profile-dialog-title"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 transition-opacity duration-300 ${
+        mounted ? "opacity-100" : "opacity-0"
+      }`}
       onClick={onClose}
       role="dialog"
     >
       <div
-        className="w-full max-w-md rounded-xl border border-[#35352e] bg-[#171715] shadow-2xl"
+        className={`relative w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-[#1a1a17] to-[#141412] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-500 ease-out ${
+          mounted
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-3 scale-95 opacity-0"
+        }`}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-start justify-between border-b border-[#2d2d27] px-5 py-4">
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[#eeeadf]/10 blur-3xl" />
+
+        <div className="relative flex items-start justify-between border-b border-white/[0.06] px-5 py-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-[#99958b]">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-[#8c8878]">
               Account
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-[#f4f1ea]" id="profile-dialog-title">
+            <h2 className="mt-1 text-lg font-semibold tracking-tight text-[#f4f1ea]" id="profile-dialog-title">
               {displayName}
             </h2>
           </div>
 
-          <Button aria-label="Close profile" onClick={onClose} size="icon" type="button" variant="ghost">
+          <Button
+            aria-label="Close profile"
+            onClick={onClose}
+            size="icon"
+            type="button"
+            variant="ghost"
+            className="shrink-0 text-[#8c8878] hover:bg-white/[0.05] hover:text-[#f4f1ea]"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        <div className="space-y-5 p-5">
-          <div className="flex items-center gap-3 rounded-lg border border-[#2d2d27] bg-[#11110f] p-3">
-            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-[#46463d] bg-[#24241f] text-[#c7c2b7]">
+        <div className="relative space-y-5 p-5">
+          <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#eeeadf]/20 to-[#eeeadf]/5 text-sm font-semibold text-[#eeeadf] ring-1 ring-white/[0.08]">
               {user.avatar_url ? (
                 <img alt="Profile" className="h-full w-full object-cover" src={user.avatar_url} />
               ) : (
-                <>
-                  {displayName?.charAt(0).toUpperCase()}
-                </>
+                <>{displayName?.charAt(0).toUpperCase()}</>
               )}
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-[#f4f1ea]">{user.email}</p>
-              <p className="truncate text-xs text-[#85827a]">
+              <p className="truncate text-xs text-[#8c8878]">
                 {user.github_username ? `@${user.github_username}` : "GitHub not linked"}
               </p>
             </div>
@@ -183,9 +203,14 @@ export default function UserProfileModal({
             Sync with GitHub
           </Button> */}
 
-          {error && <p className="text-sm text-[#e2937c]">{error}</p>}
+          {error && <p className="text-sm text-[#f0a894]">{error}</p>}
 
-          <Button className="w-full text-[#e2937c] hover:bg-[#311a17] hover:text-[#ffc0ad]" onClick={handleLogout} type="button" variant="ghost">
+          <Button
+            className="w-full text-[#f0a894] hover:bg-red-500/[0.08] hover:text-[#ffc0ad]"
+            onClick={handleLogout}
+            type="button"
+            variant="ghost"
+          >
             <LogOut className="h-4 w-4" />
             Log out
           </Button>

@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronRight, MessageSquare, Plus } from "lucide-react";
+import { ChevronRight, MessageSquare, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { Repository } from "@/api/repositories";
 import { Button } from "@/components/ui/button";
 import { useConversations } from "@/hooks/conversations/useConversations";
 
 import RepositoryButton from "./RepositoryButton";
 import RepositoryNotice from "./RepositoryNotice";
 import { RepositoryListSkeleton } from "../LoadingSkeletons";
+import { Repository } from "@/types/repositories/repository";
 
 interface RepositoryTreeItemProps {
   repository: Repository;
@@ -35,7 +35,6 @@ export default function RepositoryTreeItem({
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
 
-
   const {
     data: conversationsData,
     isLoading: conversationsLoading,
@@ -51,15 +50,13 @@ export default function RepositoryTreeItem({
       <div className="flex items-center gap-1">
         <button
           aria-label={expanded ? "Collapse conversations" : "Expand conversations"}
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#77756e] transition hover:bg-[#171715] hover:text-[#d9d5ca]"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#6b685f] transition-colors duration-150 hover:bg-[#1c1c18] hover:text-[#eeeadf]"
           onClick={() => setExpanded((previous) => !previous)}
           type="button"
         >
-          {expanded ? (
-            <ChevronDown className="h-3.5 w-3.5" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5" />
-          )}
+          <ChevronRight
+            className={cn_transition_class(expanded)}
+          />
         </button>
 
         <div className="min-w-0 flex-1">
@@ -77,21 +74,22 @@ export default function RepositoryTreeItem({
       </div>
 
       {expanded && (
-        <div className="ml-6 mt-1 space-y-1 border-l border-[#24241f] pl-3">
+        <div className="relative ml-[13px] space-y-0.5 border-l border-[#232320] pl-4">
           <div className="flex items-center justify-between py-1 pr-1">
-            <p className="text-[11px] font-medium uppercase tracking-wide text-[#5f5d57]">
+            <p className="text-[11px] font-medium uppercase tracking-wide text-[#6b685f]">
               Conversations
             </p>
 
             <Button
               aria-label="New chat"
-              className="h-6 w-6"
+              className="h-6 w-6 text-[#6b685f] hover:text-[#eeeadf]"
+              variant="ghost"
+              size="icon"
               onClick={(event) => {
                 event.stopPropagation();
+                onRepositorySelect?.(repository);
                 router.push(`/repositories/${repository.id}?new=1`);
               }}
-              size="icon"
-              variant="ghost"
             >
               <Plus className="h-3 w-3" />
             </Button>
@@ -100,10 +98,7 @@ export default function RepositoryTreeItem({
           {conversationsLoading && <RepositoryListSkeleton count={3} />}
 
           {conversationsError && (
-            <RepositoryNotice
-              tone="error"
-              text="Conversations could not be loaded."
-            />
+            <RepositoryNotice tone="error" text="Conversations could not be loaded." />
           )}
 
           {!conversationsLoading &&
@@ -128,11 +123,10 @@ export default function RepositoryTreeItem({
                 active={conversation.id === activeConversationId}
                 conversationId={conversation.id}
                 key={conversation.id}
-                onClick={() =>
-                  router.push(
-                    `/repositories/${repository.id}/${conversation.id}`,
-                  )
-                }
+                onClick={() => {
+                  onRepositorySelect?.(repository);
+                  router.push(`/repositories/${repository.id}/${conversation.id}`);
+                }}
                 title={conversation.title}
               />
             ))}
@@ -141,6 +135,10 @@ export default function RepositoryTreeItem({
       )}
     </div>
   );
+}
+
+function cn_transition_class(expanded: boolean) {
+  return `h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`;
 }
 
 interface ConversationButtonProps {
@@ -161,8 +159,8 @@ function ConversationButton({
       animate={{ opacity: 1, y: 0 }}
       className={
         active
-          ? "flex w-full min-w-0 items-center gap-2 rounded-md bg-[#20201c] px-2 py-1.5 text-left text-xs text-[#f4f1ea]"
-          : "flex w-full min-w-0 items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs text-[#aaa79e] transition hover:bg-[#171715]"
+          ? "flex w-full min-w-0 items-center gap-2 rounded-md border-l-2 border-[#ece6d8] bg-[#1c1c18] py-1.5 pl-[10px] pr-2 text-left text-[#f4f1ea]"
+          : "flex w-full min-w-0 items-center gap-2 rounded-md border-l-2 border-transparent py-1.5 pl-[10px] pr-2 text-left text-[#a7a399] transition-colors duration-150 hover:bg-[#171715] hover:text-[#eeeadf]"
       }
       exit={{ opacity: 0, y: -4 }}
       initial={{ opacity: 0, y: -6 }}
@@ -176,7 +174,7 @@ function ConversationButton({
       <AnimatePresence initial={false} mode="wait">
         <motion.span
           animate={{ opacity: 1, y: 0 }}
-          className="truncate"
+          className="truncate text-xs"
           exit={{ opacity: 0, y: -3 }}
           initial={{ opacity: 0, y: 3 }}
           key={title}

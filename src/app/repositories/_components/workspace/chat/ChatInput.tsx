@@ -26,6 +26,7 @@ export default function ChatInput({
   onSubmit,
 }: ChatInputProps) {
   const [question, setQuestion] = useState("");
+  const [textareaHeight, setTextareaHeight] = useState(48);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const {
@@ -46,6 +47,17 @@ export default function ChatInput({
       resetTranscript();
       SpeechRecognition.startListening({ continuous: true });
     }
+  };
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setQuestion(e.target.value);
+
+    e.target.style.height = "auto";
+
+    const height = Math.min(e.target.scrollHeight, MAX_HEIGHT);
+
+    e.target.style.height = `${height}px`;
+    setTextareaHeight(height);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -90,11 +102,16 @@ export default function ChatInput({
           </div>
         </div>
 
-        <motion.div className="flex items-center min-h-12 rounded-full bg-[#191917] shadow-inner">
+        <motion.div
+          className="flex min-h-12 items-center bg-[#191917] shadow-inner transition-[border-radius]"
+          animate={{
+            borderRadius: textareaHeight > 48 ? 20 : 9999,
+          }}
+        >
           <textarea
             ref={textareaRef}
             value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
             disabled={disabled}
             placeholder={
@@ -105,10 +122,14 @@ export default function ChatInput({
                   : "Ask about this repository"
             }
             rows={1}
-            style={{ maxHeight: MAX_HEIGHT }}
-            className="min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-sm leading-6 text-[#f4f1ea] outline-none placeholder:text-[#66645d] disabled:cursor-not-allowed [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#33332d] [&::-webkit-scrollbar-thumb]:hover:bg-[#464640] scrollbar-thin [scrollbar-color:#33332d_transparent]"
+            style={{
+              maxHeight: MAX_HEIGHT,
+              overflowY: textareaHeight >= MAX_HEIGHT ? "auto" : "hidden",
+            }}
+            className="min-h-12 flex-1 resize-none overflow-x-hidden bg-transparent px-4 py-3 text-sm leading-6 text-[#f4f1ea] outline-none placeholder:text-[#66645d] disabled:cursor-not-allowed [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#33332d] [&::-webkit-scrollbar-thumb]:hover:bg-[#464640] scrollbar-thin [scrollbar-color:#33332d_transparent]"
           />
 
+          {/* mic */}
           {browserSupportsSpeechRecognition && (
             <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
               {listening && (
@@ -159,13 +180,12 @@ export default function ChatInput({
           )}
 
           <Button
-            className="h-8 w-8 m-2 shrink-0 rounded-full p-0 hover:cursor-pointer"
+            className="m-2 h-8 w-8 shrink-0 rounded-full p-0"
             disabled={disabled || loading || !question.trim()}
             size="icon"
             type="submit"
           >
             <ArrowUp className="h-4 w-4" />
-            <span className="sr-only">{loading ? "Working" : "Send"}</span>
           </Button>
         </motion.div>
       </form>
