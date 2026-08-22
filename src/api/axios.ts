@@ -45,7 +45,7 @@ apiInstance.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401
       && !originalRequest._retry
-      && originalRequest.url !== `api/v1/auth/refresh`
+      && originalRequest.url !== `/api/v1/auth/refresh`
     ) {
       originalRequest._retry = true;
 
