@@ -17,6 +17,8 @@ interface RepositoryTreeItemProps {
   repository: Repository;
   index: number;
   selected: boolean;
+  expanded: boolean;
+  setExpanded: (expanded: boolean) => void;
   activeConversationId?: string;
   showNewConversation?: boolean;
   onRepositoryIntent?: (repository: Repository) => void;
@@ -27,13 +29,14 @@ export default function RepositoryTreeItem({
   repository,
   index,
   selected,
+  expanded,
+  setExpanded,
   activeConversationId,
   showNewConversation = false,
   onRepositoryIntent,
   onRepositorySelect,
 }: RepositoryTreeItemProps) {
   const router = useRouter();
-  const [expanded, setExpanded] = useState(false);
 
   const {
     data: conversationsData,
@@ -51,7 +54,7 @@ export default function RepositoryTreeItem({
         <button
           aria-label={expanded ? "Collapse conversations" : "Expand conversations"}
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#6b685f] transition-colors duration-150 hover:bg-[#1c1c18] hover:text-[#eeeadf]"
-          onClick={() => setExpanded((previous) => !previous)}
+          onClick={() => setExpanded(!expanded)}
           type="button"
         >
           <ChevronRight

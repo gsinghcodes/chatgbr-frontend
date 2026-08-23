@@ -95,7 +95,7 @@ export default function GitHubRepositoryButton({
           size="icon"
           variant="ghost"
           disabled={isAdding}
-          className="h-7 w-7 shrink-0 text-[#6b685f] opacity-0 transition group-hover:opacity-100 hover:text-[#eeeadf]"
+          className="h-7 w-7 shrink-0 text-[#6b685f] md:opacity-0 transition group-hover:opacity-100 hover:text-[#eeeadf]"
           onClick={handleAdd}
           aria-label={`Add ${repository.name}`}
           title="Add repository"

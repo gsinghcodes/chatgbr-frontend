@@ -44,8 +44,8 @@ export default function Sidebar() {
   const [cloneUrl, setCloneUrl] = useState("");
   const [query, setQuery] = useState("");
   const [progressRepositoryId, setProgressRepositoryId] = useState<string | null>(null);
-  // Closed by default on mobile/tablet, always visible on lg+
   const [showSidebar, setShowSidebar] = useState(false);
+  const [expandedRepositoryId, setExpandedRepositoryId] = useState<string | null>(null);
 
   const {
     data: repositoryData,
@@ -208,14 +208,20 @@ export default function Sidebar() {
                 index={index}
                 repository={repository}
                 selected={repository.id === (pendingRepositoryId ?? repositoryId)}
+                expanded={repository.id === expandedRepositoryId}
+                setExpanded={(nextExpanded) => {
+                  setExpandedRepositoryId(
+                    nextExpanded ? repository.id : null
+                  );
+                }}
                 activeConversationId={conversationId}
                 onRepositoryIntent={(nextRepository) => {
                   prepareRepository(nextRepository);
                 }}
                 onRepositorySelect={(nextRepository) => {
                   prepareRepository(nextRepository);
+                  setExpandedRepositoryId(nextRepository.id);
                   setPendingRepositoryId(nextRepository.id);
-                  setShowSidebar(false);
                 }}
                 showNewConversation={
                   repository.id === repositoryId && showNewConversation
@@ -283,7 +289,6 @@ export default function Sidebar() {
                       const result = await createRepository.mutateAsync({
                         clone_url: repository.clone_url,
                       });
-                      console.log(result.data.repository.id)
                       setProgressRepositoryId(result.data.repository.id);
                     }}
                   />
