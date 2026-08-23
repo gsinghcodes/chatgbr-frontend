@@ -260,7 +260,7 @@ export default function Sidebar() {
             && !githubError
             && !githubLoading
             && user
-            && !user.github_installed
+            &&(!user.github_installed || githubRepositories.length == 0)
             && (
               <div className="rounded-md bg-[#161613] p-3.5">
                 <p className="text-xs font-medium text-[#eeeadf]">Connect GitHub</p>
