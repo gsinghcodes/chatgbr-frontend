@@ -106,7 +106,7 @@ export default function RepositoryProgressModal({
 
   return (
     <div
-      className={`fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[60] flex w-full items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-opacity duration-300 ${
         mounted ? "opacity-100" : "opacity-0"
       }`}
     >
