@@ -113,6 +113,7 @@ export default function ChatInput({
             value={question}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
+            maxLength={2000}
             disabled={disabled}
             placeholder={
               listening
