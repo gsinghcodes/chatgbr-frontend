@@ -55,8 +55,11 @@ html, body {
 }
 
 body {
-  min-height: 100vh;
-  overflow-x: hidden;
+  position: fixed;   /* takes body out of normal document flow — nothing left for WebKit to bounce */
+  inset: 0;           /* shorthand for top/right/bottom/left: 0, pins it to the viewport edges */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;   /* body itself can never scroll, at the browser level */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
