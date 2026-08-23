@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteRepository } from "@/hooks/repositories/useDeleteRepository";
+import { useRouter } from "next/navigation";
 
 interface RepositoryButtonProps {
   index: number;
@@ -62,12 +63,14 @@ export default function RepositoryButton({
   const [isDeleting, setIsDeleting] = useState(false);
   const status = statusConfig[repository.status] ?? statusConfig.PENDING;
   const deleteRepository = useDeleteRepository()
+  const router = useRouter();
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
       setIsDeleting(true);
       await deleteRepository.mutateAsync(repository.id);
+      router.replace("/")
     } catch (error) {
       console.error("Failed to delete repository:", error);
     } finally {
