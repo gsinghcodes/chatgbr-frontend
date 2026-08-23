@@ -4,6 +4,7 @@ interface UserDetails {
 	id: string;
 	email: string;
 	github_username: string | null;
+	github_installed: boolean;
 	avatar_url: string | null;
 }
 
