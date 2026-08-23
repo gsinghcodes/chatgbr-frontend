@@ -244,7 +244,7 @@ export default function Chat({
   return (
     <motion.section
       animate={{ opacity: 1, y: 0 }}
-      className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0f0f0d]"
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0f0f0d]"
       initial={{ opacity: 0, y: 6 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
     >
