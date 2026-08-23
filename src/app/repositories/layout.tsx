@@ -14,7 +14,7 @@ export default function RepositoriesLayout({
   const isNewRepositoryPage = pathname === "/repositories/new";
 
   return (
-    <main className="no-scrollbar flex h-dvh min-h-0 overflow-hidden bg-[#0f0f0d] text-[#f4f1ea]">
+    <main className="no-scrollbar flex h-screen overflow-hidden bg-[#0f0f0d] text-[#f4f1ea]">
       <Sidebar />
       {isNewRepositoryPage ? children : <RepositoryWorkspace />}
     </main>
