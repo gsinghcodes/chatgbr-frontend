@@ -32,6 +32,7 @@ import AddRepositoryModal from "../../repository-tree/AddRepositoryModal";
 import axios from "axios";
 import { Repository } from "@/types/repositories/repository";
 import RepositoryProgressModal from "../../repository-tree/RepositoryProgressModal";
+import { useCurrentUser } from "@/hooks/auth/useCurrentUser";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -255,10 +256,7 @@ export default function Sidebar() {
             <RepositoryNotice tone="error" text="GitHub repositories could not be loaded." />
           )}
 
-          {githubRepositoriesOpen &&
-            !githubLoading &&
-            !githubError &&
-            githubRepositories.length === 0 && (
+          {githubRepositoriesOpen && user && !user.github_installed && (
               <div className="rounded-md bg-[#161613] p-3.5">
                 <p className="text-xs font-medium text-[#eeeadf]">Connect GitHub</p>
                 <p className="mt-1 text-[11px] leading-4 text-[#6b685f]">
