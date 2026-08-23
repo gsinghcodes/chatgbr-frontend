@@ -50,7 +50,9 @@ export default function ChatInput({
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQuestion(e.target.value);
+    const value = e.target.value.slice(0, 2000);
+
+    setQuestion(value);
 
     e.target.style.height = "auto";
 
@@ -91,19 +93,20 @@ export default function ChatInput({
   }
 
   return (
-    <div className="bg-transparent px-15 pb-8 pt-4">
-      <form onSubmit={handleSubmit} className="mx-auto">
-        <div className="mb-2 flex items-center justify-between gap-3 px-1">
+    <div className="w-full bg-transparent px-2 pb-2 pt-3 sm:px-4 sm:pb-4 sm:pt-4 lg:px-6">
+      <form className="mx-auto w-full max-w-4xl" onSubmit={handleSubmit}>
+        <div className="mb-2 flex min-w-0 items-center justify-between gap-3 px-1">
           <div className="flex min-w-0 items-center gap-2">
             <GitBranch className="h-3.5 w-3.5 shrink-0 text-[#77756e]" />
-            <span className="truncate text-xs font-medium text-[#d9d5ca]">
+
+            <span className="min-w-0 truncate text-[11px] font-medium text-[#d9d5ca] sm:text-xs">
               {repositoryName}
             </span>
           </div>
         </div>
 
         <motion.div
-          className="flex min-h-12 items-center bg-[#191917] shadow-inner transition-[border-radius]"
+          className="flex min-h-12 w-full items-end gap-2 bg-[#191917] shadow-inner"
           animate={{
             borderRadius: textareaHeight > 48 ? 20 : 9999,
           }}
@@ -127,43 +130,42 @@ export default function ChatInput({
               maxHeight: MAX_HEIGHT,
               overflowY: textareaHeight >= MAX_HEIGHT ? "auto" : "hidden",
             }}
-            className="min-h-12 flex-1 resize-none overflow-x-hidden bg-transparent px-4 py-3 text-sm leading-6 text-[#f4f1ea] outline-none placeholder:text-[#66645d] disabled:cursor-not-allowed [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#33332d] [&::-webkit-scrollbar-thumb]:hover:bg-[#464640] scrollbar-thin [scrollbar-color:#33332d_transparent]"
+            className="
+            min-h-12
+            min-w-0
+            flex-1
+            resize-none
+            overflow-x-hidden
+            bg-transparent
+            px-3
+            py-3
+            text-sm
+            leading-6
+            text-[#f4f1ea]
+            outline-none
+            placeholder:text-[#66645d]
+            disabled:cursor-not-allowed
+            sm:px-4
+            [&::-webkit-scrollbar]:w-2
+            [&::-webkit-scrollbar-track]:bg-transparent
+            [&::-webkit-scrollbar-thumb]:rounded-full
+            [&::-webkit-scrollbar-thumb]:bg-[#33332d]
+            [&::-webkit-scrollbar-thumb]:hover:bg-[#464640]
+            scrollbar-thin
+            [scrollbar-color:#33332d_transparent]
+          "
           />
 
-          {/* mic */}
+          {/* Microphone */}
           {browserSupportsSpeechRecognition && (
-            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
-              {listening && (
-                <>
-                  <motion.span
-                    className="absolute inset-0 rounded-full bg-red-400/25"
-                    animate={{ scale: [1, 1.8], opacity: [0.5, 0] }}
-                    transition={{
-                      duration: 1.4,
-                      repeat: Infinity,
-                      ease: "easeOut",
-                    }}
-                  />
-                  <motion.span
-                    className="absolute inset-0 rounded-full bg-red-400/25"
-                    animate={{ scale: [1, 1.8], opacity: [0.5, 0] }}
-                    transition={{
-                      duration: 1.4,
-                      repeat: Infinity,
-                      ease: "easeOut",
-                      delay: 0.7,
-                    }}
-                  />
-                </>
-              )}
-
+            <div className="flex h-12 shrink-0 items-center justify-center">
               <Button
                 type="button"
                 onClick={toggleListening}
                 disabled={disabled || loading}
                 size="icon"
                 variant="ghost"
-                className={`relative z-10 h-8 w-8 rounded-full p-0 transition-colors ${listening
+                className={`h-8 w-8 shrink-0 rounded-full p-0 transition-colors ${listening
                     ? "bg-red-500/15 text-red-400 hover:bg-red-500/20"
                     : "text-[#77756e] hover:text-[#d9d5ca]"
                   }`}
@@ -171,8 +173,10 @@ export default function ChatInput({
                 {listening ? (
                   <Square className="h-3 w-3 fill-current" />
                 ) : (
-                  <Mic className="h-4 w-4" />
+                  <Mic className="h-4 w-4"
+                  />
                 )}
+
                 <span className="sr-only">
                   {listening ? "Stop recording" : "Start recording"}
                 </span>
@@ -180,14 +184,16 @@ export default function ChatInput({
             </div>
           )}
 
-          <Button
-            className="m-2 h-8 w-8 shrink-0 rounded-full p-0"
-            disabled={disabled || loading || !question.trim()}
-            size="icon"
-            type="submit"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </Button>
+          <div className="flex h-12 shrink-0 items-center justify-center px-1">
+            <Button
+              className="h-8 w-8 shrink-0 rounded-full p-0"
+              disabled={disabled || loading || !question.trim()}
+              size="icon"
+              type="submit"
+            >
+              <ArrowUp className="h-4 w-4" />
+            </Button>
+          </div>
         </motion.div>
       </form>
     </div>

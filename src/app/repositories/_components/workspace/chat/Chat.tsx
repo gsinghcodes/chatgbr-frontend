@@ -244,37 +244,51 @@ export default function Chat({
   return (
     <motion.section
       animate={{ opacity: 1, y: 0 }}
-      className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-[#0f0f0d]"
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0f0f0d]"
       initial={{ opacity: 0, y: 6 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
     >
-      <div className="relative flex-1 overflow-hidden">
+      {/* Messages */}
+      <div className="relative min-h-0 flex-1 overflow-hidden">
         <div
-          onScroll={handleScroll}
           ref={scrollContainerRef}
+          onScroll={handleScroll}
           className="no-scrollbar relative z-10 h-full overflow-y-auto"
         >
-          {!Boolean(repositoryId) ? (
-            <div
-              className="flex h-full items-center"
-              key="empty">
-              <div className="mx-auto">
-                <h3 className="text-4xl text-center font-semibold text-[#fffaf0]">Select a repository.</h3>
-                <p className="mt-4 text-sm leading-6 text-[#8c8a82]">Select one from the sidebar to start a code-aware conversation with repository context already attached.</p>
+          {!repositoryId ? (
+            /* Empty state: no repository */
+            <div className="flex min-h-full items-center px-4 py-10 sm:px-6">
+              <div className="mx-auto w-full max-w-2xl text-center">
+                <h3 className="text-2xl font-semibold tracking-tight text-[#fffaf0] sm:text-3xl lg:text-4xl">
+                  Select a repository.
+                </h3>
+
+                <p className="mx-auto mt-3 max-w-xl text-xs leading-5 text-[#8c8a82] sm:mt-4 sm:text-sm sm:leading-6">
+                  Select one from the sidebar to start a code-aware
+                  conversation with repository context already attached.
+                </p>
               </div>
             </div>
-          ) : (messages.length === 0) ? (
+          ) : messages.length === 0 ? (
+            /* Empty state: repository selected */
             <div
-              className="flex h-full items-center"
               key="ready"
+              className="flex min-h-full items-center px-4 py-10 sm:px-6"
             >
-              <div className="mx-auto">
-                <h3 className="text-4xl font-semibold text-center text-[#fffaf0]">Ready when you are.</h3>
-                <p className="mt-4 max-w-lg text-sm leading-6 text-[#8c8a82]">Ask about the architecture, trace a bug, explain a file, or plan the next change.</p>
+              <div className="mx-auto w-full max-w-2xl text-center">
+                <h3 className="text-2xl font-semibold tracking-tight text-[#fffaf0] sm:text-3xl lg:text-4xl">
+                  Ready when you are.
+                </h3>
+
+                <p className="mx-auto mt-3 max-w-lg text-xs leading-5 text-[#8c8a82] sm:mt-4 sm:text-sm sm:leading-6">
+                  Ask about the architecture, trace a bug, explain a file, or
+                  plan the next change.
+                </p>
               </div>
             </div>
           ) : (
-            <div className="mx-auto flex flex-col gap-6 px-20 py-8">
+            /* Conversation */
+            <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-col gap-5 px-3 py-5 sm:gap-6 sm:px-6 sm:py-8 lg:px-8 xl:px-10">
               <AnimatePresence initial={false}>
                 {messages.map((message, index) => (
                   <ChatMessage
@@ -293,33 +307,34 @@ export default function Chat({
                       initial={{ opacity: 0, y: 8 }}
                       key="loading"
                     >
-                      <div>
-                        <Loader2 className="h-4 w-4 animate-spin text-[#aaa79e]" />
-                      </div>
+                      <Loader2 className="h-4 w-4 animate-spin text-[#aaa79e]" />
                     </motion.div>
                   )}
               </AnimatePresence>
             </div>
-          )
-          }
+          )}
         </div>
+
+        {/* Bottom fade */}
         <div
           className="
-      pointer-events-none
-      absolute
-      bottom-0
-      left-0
-      right-0
-      z-20
-      h-18
-      bg-linear-to-b
-      from-transparent
-      to-[#0f0f0d]
-    "
+          pointer-events-none
+          absolute
+          bottom-0
+          left-0
+          right-0
+          z-20
+          h-16
+          bg-linear-to-b
+          from-transparent
+          to-[#0f0f0d]
+          sm:h-18
+        "
         />
       </div>
 
-      <div className="relative z-10">
+      {/* Input */}
+      <div className="relative z-30 w-full px-2 pb-2 sm:px-4 sm:pb-4 lg:px-6">
         <ChatInput
           disabled={!repositoryId}
           loading={loading}

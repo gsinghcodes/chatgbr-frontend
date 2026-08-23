@@ -46,8 +46,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={
           user
-            ? "group relative min-w-0 max-w-2xl rounded-lg bg-[#ece6d8] px-3 py-2 text-[#151512]"
-            : "group relative min-w-0 max-w-3xl rounded-lg bg-[#171715] px-3 py-2 text-[#f4f1ea]"
+            ? "group relative min-w-0 w-fit max-w-[90%] sm:max-w-[75%] lg:max-w-2xl rounded-lg bg-[#ece6d8] px-3 py-2 text-[#151512]"
+            : "group relative min-w-0 w-fit max-w-full sm:max-w-[90%] lg:max-w-3xl rounded-lg bg-[#171715] px-3 py-2 text-[#f4f1ea]"
         }
       >
         {hasReasoning && (
@@ -110,7 +110,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                   initial={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.18, ease: "easeOut" }}
                 >
-                  <div className="max-h-64 scrollbar-none overflow-y-auto whitespace-pre-wrap py-3 pl-4 pr-3 font-mono text-xs leading-6 text-[#8c8a82]">
+                  <div className="max-h-64 overflow-y-auto no-scrollbar whitespace-pre-wrap wrap-break-word py-3 pl-4 pr-3 font-mono text-[11px] leading-5 text-[#8c8a82] sm:text-xs sm:leading-6">
                     {message.reasoning}
                   </div>
                 </motion.div>
@@ -168,7 +168,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                         </div>
                         <pre className="overflow-x-auto px-4 py-3">
                           <code
-                            className="font-mono text-[13px] leading-6 text-[#e8e5db]"
+                            className="font-mono text-xs leading-5 text-[#e8e5db] sm:text-[13px] sm:leading-6"
                             {...props}
                           >
                             {children}
@@ -216,7 +216,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {!user && message.content && (
           <button
             aria-label="Copy message"
-            className="absolute -right-5 -top-5 rounded-md border border-transparent p-1.5 text-[#8c8a82] opacity-0 transition-all duration-150 hover:text-[#f4f1ea] focus-visible:opacity-100 group-hover:opacity-100"
+            className="hidden md:block absolute right-1 top-1 rounded-md border border-transparent p-1.5 text-[#8c8a82] opacity-100 transition-all duration-150 hover:text-[#f4f1ea] focus-visible:opacity-100 sm:-right-5 sm:-top-5 sm:opacity-0 sm:group-hover:opacity-100"
             onClick={handleCopy}
             type="button"
           >
