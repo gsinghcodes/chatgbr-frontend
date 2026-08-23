@@ -5,6 +5,7 @@ export interface User {
   email: string;
   github_username?: string | null;
   avatar_url?: string | null;
+  github_installed: boolean;
 }
 
 export interface UpdateUserRequest {

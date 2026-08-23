@@ -61,6 +61,7 @@ export default function AuthProvider({
             email: user.email,
             github_username: user.github_username ?? null,
             avatar_url: user.avatar_url ?? null,
+            github_installed: user.github_installed ?? null,
           }),
         );
       } catch (error: unknown) {

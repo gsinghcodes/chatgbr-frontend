@@ -73,6 +73,7 @@ export default function UserProfileModal({
         ...updatedUser,
         github_username: updatedUser.github_username ?? null,
         avatar_url: updatedUser.avatar_url ?? null,
+        github_installed: updatedUser.github_installed ?? null,
       }),
     );
   }
