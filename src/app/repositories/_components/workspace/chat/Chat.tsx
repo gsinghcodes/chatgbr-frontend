@@ -244,7 +244,7 @@ export default function Chat({
   return (
     <motion.section
       animate={{ opacity: 1, y: 0 }}
-      className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0f0f0d]"
+      className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0f0f0d]"
       initial={{ opacity: 0, y: 6 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
     >
@@ -335,7 +335,7 @@ export default function Chat({
       </div>
 
       {/* Input */}
-      <div className="relative z-30 w-full px-2 pb-2 sm:px-4 sm:pb-4 lg:px-6">
+      <div className="relative z-30 w-full shrink-0 px-2 pb-2 sm:px-4 sm:pb-4 lg:px-6">
         <ChatInput
           disabled={!repositoryId}
           loading={loading}
