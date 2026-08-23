@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn("font-sans", notoSans.variable, playfairDisplayHeading.variable)}>
+    <html lang="en" className={cn("dark font-sans", notoSans.variable, playfairDisplayHeading.variable)}>
       <body>
         <Providers>
           <AuthProvider>{children}</AuthProvider>
