@@ -48,8 +48,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-html {
-  overscroll-behavior-y: none;
+html, body {
+  height: 100%;
+  overscroll-behavior: none;
+  background-color: #0f0f0d; /* hard fallback, don't rely solely on CSS var timing */
 }
 
 body {
