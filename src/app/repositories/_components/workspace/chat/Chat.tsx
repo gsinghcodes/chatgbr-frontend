@@ -253,11 +253,12 @@ export default function Chat({
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="no-scrollbar relative z-10 h-full overflow-y-auto"
+          className={`no-scrollbar relative z-10 h-full ${messages.length > 0 ? "overflow-y-auto" : "overflow-hidden"
+            }`}
         >
           {!repositoryId ? (
             /* Empty state: no repository */
-            <div className="flex min-h-full items-center px-4 py-10 sm:px-6">
+            <div className="flex h-full items-center px-4 py-10 sm:px-6">
               <div className="mx-auto w-full max-w-2xl text-center">
                 <h3 className="text-2xl font-semibold tracking-tight text-[#fffaf0] sm:text-3xl lg:text-4xl">
                   Select a repository.
@@ -273,7 +274,7 @@ export default function Chat({
             /* Empty state: repository selected */
             <div
               key="ready"
-              className="flex min-h-full items-center px-4 py-10 sm:px-6"
+              className="flex h-full items-center px-4 py-10 sm:px-6"
             >
               <div className="mx-auto w-full max-w-2xl text-center">
                 <h3 className="text-2xl font-semibold tracking-tight text-[#fffaf0] sm:text-3xl lg:text-4xl">
