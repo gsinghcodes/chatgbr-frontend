@@ -122,7 +122,7 @@ export default function ChatInput({
               listening
                 ? "Listening…"
                 : disabled
-                  ? "Select a repository to ask about its code"
+                  ? "Select a repository"
                   : "Ask about this repository"
             }
             rows={1}
