@@ -96,7 +96,7 @@ export default function RegisterPage() {
 
   return (
     <main
-      className={`${inter.className} flex min-h-screen items-center justify-center bg-[#121212] px-4 py-20`}
+      className={`${inter.className} flex min-h-screen items-center justify-center bg-[#121212] px-4 py-10`}
     >
       <motion.div
         initial="hidden"
@@ -106,7 +106,7 @@ export default function RegisterPage() {
       >
         {/* Header */}
         <motion.div variants={itemVariants}>
-          <h1 className="mb-2 text-3xl font-semibold tracking-tight text-white">
+          <h1 className="mb-1 text-3xl font-semibold tracking-tighter text-white">
             Turn code into conversation
           </h1>
 
@@ -121,7 +121,7 @@ export default function RegisterPage() {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="email"
-              className="mb-2 block text-xs font-medium text-zinc-400"
+              className="mb-1 block text-xs font-medium text-zinc-400"
             >
               Email
             </label>
@@ -146,7 +146,7 @@ export default function RegisterPage() {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="password"
-              className="mb-2 block text-xs font-medium text-zinc-400"
+              className="mb-1 block text-xs font-medium text-zinc-400"
             >
               Password
             </label>

@@ -84,7 +84,7 @@ export default function LoginPage() {
 
   return (
     <main
-      className={`${inter.className} flex min-h-screen items-center justify-center bg-[#121212] px-4 py-20`}
+      className={`${inter.className} flex min-h-screen items-center justify-center bg-[#121212] px-4 py-10`}
     >
       <motion.div
         initial="hidden"
@@ -94,7 +94,7 @@ export default function LoginPage() {
       >
         {/* Header */}
         <motion.div variants={itemVariants}>
-          <h1 className="mb-2 text-3xl font-semibold tracking-tight text-white">
+          <h1 className="mb-1 text-3xl font-semibold tracking-tight text-white">
             Welcome back
           </h1>
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="email"
-              className="mb-2 block text-xs font-medium text-zinc-400"
+              className="mb-1 block text-xs font-medium text-zinc-400"
             >
               Email
             </label>
@@ -134,7 +134,7 @@ export default function LoginPage() {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="password"
-              className="mb-2 block text-xs font-medium text-zinc-400"
+              className="mb-1 block text-xs font-medium text-zinc-400"
             >
               Password
             </label>
